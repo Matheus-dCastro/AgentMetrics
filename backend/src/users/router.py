@@ -119,6 +119,7 @@ async def list_leads(
             "nome": item.lead_name,
             "numero": item.lead_number,
             "Status": item.status,
+            "Fechada": item.fechado,
             "intencao": item.intencao,
             "satisfação": item.satisfacao,
             "resumo": item.resumo_conversa,

@@ -11,9 +11,8 @@ from backend.src.utils.validations import get_record, result_check, insert_db
 import backend.src.utils.validations
 
 
-
 def split_intencao(value):
-    """
+    """ teste de commit
     Normaliza e limpa o valor da intenção, convertendo strings ou listas em um array limpo.
 
     Args:
@@ -25,7 +24,11 @@ def split_intencao(value):
     if value is None:
         return []
     if isinstance(value, list):
-        return [str(item).strip() for item in value if item is not None and str(item).strip()]
+        return [
+            str(item).strip()
+            for item in value
+            if item is not None and str(item).strip()
+        ]
     if isinstance(value, str):
         return [item.strip() for item in value.split(",") if item.strip()]
     raise ValueError("intencao deve ser uma string ou lista de strings")
@@ -57,7 +60,7 @@ def modulo_lead(existing_user, existing_lead, data_lead):
     """
     validate_lead_intencao(existing_user, data_lead)
     intent_value = data_lead.intencao or existing_user.intencao
-    
+
     return UserLeadAssociation(
         conversa_id=data_lead.conversa_id,
         user_id=existing_user.id,
@@ -66,6 +69,7 @@ def modulo_lead(existing_user, existing_lead, data_lead):
         lead_number=data_lead.numero_lead,
         categoria=data_lead.categoria,
         status=(data_lead.status.value if data_lead.status else None),
+        fechado=False,
         resumo_conversa=data_lead.resumo_conversa,
         intencao=intent_value,
         data_hora_servico=data_lead.data_hora_servico,
@@ -86,6 +90,7 @@ def new_lead(data_lead: LeadValidation, db: Session = Depends(get_db)):
         type="lead",
     )
     association = modulo_lead(existing_user, new_lead_obj, data_lead)
+
     new_lead_obj.associations.append(association)
 
     insert_db(db, new_lead_obj, True)
@@ -100,11 +105,15 @@ def validation_lead_user(user, lead, db: Session, data_lead):
     """
     Busca se já existe um pareamento ativo de conversa para o trio específico (User, Lead, Conversa).
     """
-    return db.query(UserLeadAssociation).filter(
-        UserLeadAssociation.lead_id == lead.id,
-        UserLeadAssociation.user_id == user.id,
-        UserLeadAssociation.conversa_id == data_lead.conversa_id,
-    ).first()
+    return (
+        db.query(UserLeadAssociation)
+        .filter(
+            UserLeadAssociation.lead_id == lead.id,
+            UserLeadAssociation.user_id == user.id,
+            UserLeadAssociation.conversa_id == data_lead.conversa_id,
+        )
+        .first()
+    )
 
 
 def lead_update(data_lead, db: Session, user, lead):
@@ -117,7 +126,12 @@ def lead_update(data_lead, db: Session, user, lead):
         if association:
             validate_lead_intencao(user, data_lead)
             association.categoria = data_lead.categoria
-            association.status = data_lead.status.value if data_lead.status else None
+            if data_lead.status.value == "FECHADO":
+                association.fechado = True
+            else:
+                association.status = (
+                    data_lead.status.value if data_lead.status else None
+                )
             association.resumo_conversa = data_lead.resumo_conversa
             if data_lead.intencao is not None:
                 association.intencao = data_lead.intencao
@@ -142,18 +156,26 @@ def aggregate_metrics_for_user(user: UserDB, db: Session):
     """
     Calcula, consolida e persiste as métricas de performance de atendimento de um usuário único.
     """
-    associations = db.query(UserLeadAssociation).filter(UserLeadAssociation.user_id == user.id).all()
+    associations = (
+        db.query(UserLeadAssociation)
+        .filter(UserLeadAssociation.user_id == user.id)
+        .all()
+    )
 
     total_leads = len(associations)
     pendentes = sum(1 for a in associations if a.status == "PENDENTE")
     aberto = sum(1 for a in associations if a.status == "ABERTO")
-    leads_fechados = sum(1 for a in associations if a.status == "FECHADO")
+    leads_fechados = sum(1 for a in associations if a.fechado == True)
 
     satisfacoes = [a.satisfacao for a in associations if a.satisfacao is not None]
     avg_satisfacao = float(sum(satisfacoes) / len(satisfacoes)) if satisfacoes else None
     avg_response_time = None
 
-    metric = db.query(MetricasLeadInUser).filter(MetricasLeadInUser.user_id == user.id).first()
+    metric = (
+        db.query(MetricasLeadInUser)
+        .filter(MetricasLeadInUser.user_id == user.id)
+        .first()
+    )
 
     if metric:
         metric.total_leads = total_leads
@@ -189,14 +211,16 @@ def aggregate_metricas(db: Session = Depends(get_db)):
         results = []
         for u in users:
             m = aggregate_metrics_for_user(u, db)
-            results.append({
-                "user_id": u.id,
-                "total_leads": m.total_leads,
-                "leads_abertos": m.leads_abertos,
-                "leads_fechados": m.leads_fechados,
-                "avg_satisfacao": m.avg_satisfacao,
-                "last_aggregated": m.last_aggregated,
-            })
+            results.append(
+                {
+                    "user_id": u.id,
+                    "total_leads": m.total_leads,
+                    "leads_abertos": m.leads_abertos,
+                    "leads_fechados": m.leads_fechados,
+                    "avg_satisfacao": m.avg_satisfacao,
+                    "last_aggregated": m.last_aggregated,
+                }
+            )
         return {"message": "Métricas agregadas com sucesso", "summary": results}
     except Exception as e:
         db.rollback()
@@ -212,4 +236,3 @@ def edit_nome(data_lead, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(lead)
     return {"message": "Pareamento nome atualizado com sucesso", "User:": lead.id}
-

@@ -32,7 +32,7 @@ class LeadValidation(BaseModel):
     conversa_id: int
     numero_lead: str
     numero_user: str
-    categoria: Optional[str] = Categoria.MEDIA
+    categoria: Optional[str] = Categoria.BAIXA
     status: Optional[StatusEnum] = StatusEnum.PENDENTE
     resumo_conversa: Optional[str] = None
     intencao: Optional[Union[str, list[str]]] = None

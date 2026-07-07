@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Date, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, Date, ForeignKey
 from sqlalchemy.orm import relationship
 import backend.src.utils.models as models
 from sqlalchemy import (
@@ -80,6 +80,7 @@ class UserLeadAssociation(Base):
     lead_number = Column("lead_number", String)
 
     status = Column("status", String)
+    fechado = Column("fechado", Boolean)
     categoria = Column("categoria", String)
     intencao = Column("intencao", String)
     satisfacao = Column("satisfacao", Integer)

@@ -1,11 +1,8 @@
-- [ ] arrumar a parte do fechamento da conversa para metrificar estados separados do fechamento
+- [X] arrumar a parte do fechamento da conversa para metrificar estados separados do fechamento
 - [ ] tratamento de erros
 - [ ] refatorar as funções de edit do user principalmente a de intencao
-- [ ] criar metodos de listagem
 - [ ] criar metodos de metricas atulizar esse metodos aqui
-- [X] criar atulizaador de metricas
 - [ ] revisar e refatorar filtros
-- [ ] criar gets de user e leads
 - [ ] metdos de root
 
 - [ ] front-end
