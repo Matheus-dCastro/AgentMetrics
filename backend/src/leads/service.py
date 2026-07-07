@@ -12,7 +12,7 @@ import backend.src.utils.validations
 
 
 def split_intencao(value):
-    """
+    """ teste de commit
     Normaliza e limpa o valor da intenção, convertendo strings ou listas em um array limpo.
 
     Args:
