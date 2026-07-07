@@ -24,6 +24,7 @@ class user_lead_association(BaseModel):
     conversa_id: int
     categoria: Optional[str] = None
     status: Optional[StatusEnum] = StatusEnum.ABERTO
+    fechado: bool = False
     resumo_conversa: Optional[str] = None
     intencao: Optional[str] = None
     data_hora_servico: Optional[date] = None
