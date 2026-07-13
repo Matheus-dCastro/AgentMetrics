@@ -23,7 +23,7 @@ from backend.src.users.service import token, serialize_intencao
 user_routers = APIRouter(prefix="/user", tags=["User"])
 
 
-@user_routers.post("/cadastro")
+@user_routers.post("/register")
 def add_new_user(user_data: Creat_new_user, db: Session = Depends(get_db)):
     """
     Cadastra um novo usuário atendente no sistema após validação de dados únicos.
