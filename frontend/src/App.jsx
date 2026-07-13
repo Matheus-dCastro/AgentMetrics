@@ -37,7 +37,7 @@ function App() {
 
   return (
     <div className="app-container">
-      <h1>Front-end Cachina</h1>
+      <h1>Front-end AgentMetrics</h1>
       <p>Consumindo FastAPI com React + Axios</p>
 
       {loading && <p>Carregando usuários...</p>}
