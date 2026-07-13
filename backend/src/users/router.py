@@ -66,25 +66,25 @@ async def login(login: login_user, db: Session = Depends(get_db)):
     }
 
 
-@user_routers.post("/login-forms") # serve para ter o login na documentação interativa
-async def login_forms(
-    login: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
-):
-    """
-    Autentica um usuário usando o formato de formulário padrão OAuth2 (utilizado pelo Swagger).
-    """
-    user = get_record(db, UserDB, {"email": login.username}, True)
-    result_check(user, "Senha ou Login errados", 400, False)
+# @user_routers.post("/login-forms") # serve para ter o login na documentação interativa
+# async def login_forms(
+#     login: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
+# ):
+#     """
+#     Autentica um usuário usando o formato de formulário padrão OAuth2 (utilizado pelo Swagger).
+#     """
+#     user = get_record(db, UserDB, {"email": login.username}, True)
+#     result_check(user, "Senha ou Login errados", 400, False)
 
-    if not verify_password(login.password, user.senha):
-        raise HTTPException(status_code=400, detail="Senha ou Login errados")
+#     if not verify_password(login.password, user.senha):
+#         raise HTTPException(status_code=400, detail="Senha ou Login errados")
 
-    access_token = token(user.id)
-    return {
-        "access_token": access_token,
-        "token_type": "Bearer",
-        "message": "Autenticação bem-sucedida",
-    }
+#     access_token = token(user.id)
+#     return {
+#         "access_token": access_token,
+#         "token_type": "Bearer",
+#         "message": "Autenticação bem-sucedida",
+#     }
 
 
 @user_routers.get("/refresh")  # refatorar esse metodo para virar um def simples

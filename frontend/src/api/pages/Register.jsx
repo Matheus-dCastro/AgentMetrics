@@ -10,13 +10,13 @@ function Register() {
   const inputPassword = useRef();
 
   async function registerUsers() {
-    await api.post("/user/register", {
+    const user = {
       name: inputName.current.value,
       numero: inputNumber.current.value,
       email: inputEmail.current.value,
       senha: inputPassword.current.value,
-    });
-    
+    };
+    register(user);
   }
 
   return (
