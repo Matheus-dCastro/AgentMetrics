@@ -18,3 +18,4 @@ export const login = async (dadosUser) => {
     throw erros;
   }
 };
+// intensao

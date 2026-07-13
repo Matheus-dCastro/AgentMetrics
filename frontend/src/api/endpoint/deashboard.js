@@ -10,3 +10,4 @@ export const list_lead = async () => {
     throw erros;
   }
 };
+//metricas e graficos
