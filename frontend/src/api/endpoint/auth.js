@@ -1,4 +1,4 @@
-import api from "../axiosconfig";
+import api from "../../service/axiosconfig";
 
 export const register = async (dadosUser) => {
   try {

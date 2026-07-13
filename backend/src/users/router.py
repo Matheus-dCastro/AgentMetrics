@@ -66,7 +66,7 @@ async def login(login: login_user, db: Session = Depends(get_db)):
     }
 
 
-@user_routers.post("/login-forms")
+@user_routers.post("/login-forms") # serve para ter o login na documentação interativa
 async def login_forms(
     login: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ):
